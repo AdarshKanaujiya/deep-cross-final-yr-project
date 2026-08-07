@@ -3,8 +3,7 @@
 dataset/
 *.tif
 *.tiff
-*.json
-*.csv
+
 
 # === Python Virtual Environments ===
 .venv/
