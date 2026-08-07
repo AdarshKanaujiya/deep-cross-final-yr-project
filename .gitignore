@@ -1,0 +1,39 @@
+# === Machine Learning & Geospatial Data ===
+# Ignore the local BigEarthNet dataset folder completely
+dataset/
+*.tif
+*.tiff
+*.json
+*.csv
+
+# === Python Virtual Environments ===
+.venv/
+venv/
+env/
+ENV/
+Hyper-V/
+
+# === Python Caching and Compiled Files ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ipynb_checkpoints/
+
+# === IDE & Editor Settings ===
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# === System Files ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+
