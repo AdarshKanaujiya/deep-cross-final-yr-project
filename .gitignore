@@ -3,6 +3,8 @@
 dataset/
 *.tif
 *.tiff
+*.zip
+
 
 
 # === Python Virtual Environments ===

@@ -312,3 +312,28 @@ The pipeline successfully loads BigEarthNet-S2 RGB patches, converts them into s
 The pipeline was successfully tested without missing values or NaNs, and the statistics computation processed all **18,067 training patches with zero skipped images**.
 
 The resulting `(3, 224, 224)` normalized representation is now ready to be used by the feature-extraction and retrieval stages planned for the subsequent weeks.
+
+---
+
+## Team Integration & Helper Utilities
+
+To enable team members (Person 4 - Fateh & Person 1 - Jainam) to perform feature extraction, FAISS retrieval, and evaluation without transferring the full 58 GB dataset, the following utility scripts and output files were developed:
+
+### 1. Validation Subset Packager (`zip_val_subset.py`)
+* **Script**: `zip_val_subset.py`
+* **Output Archive**: `outputs/s2_val_subset_4500.zip` (~500 MB)
+* **Purpose**: Extracts and packages only the **4,500 Sentinel-2 validation patch folders** corresponding to `val_split.csv`. This provides a lightweight 500 MB dataset package that any team member can download via Google Drive for local feature extraction and testing.
+
+### 2. Baseline Feature Embedding Generator (`generate_baseline_embeddings.py`)
+* **Script**: `generate_baseline_embeddings.py`
+* **Outputs**:
+  * `outputs/embeddings/baseline_val_ms_embeddings.npy` (Array shape: `4,500 × 2,048`, ~36 MB)
+  * `outputs/embeddings/baseline_val_patch_ids.txt` (Ordered list of 4,500 validation patch IDs)
+* **Purpose**: Uses pretrained **ResNet-50** (with FC layer replaced by `nn.Identity()`) combined with Person 2's standardized `preprocess_s2.py` pipeline to generate 2048-dimensional feature vectors for all 4,500 validation patches in ~1–2 minutes.
+
+### 3. Multi-Label mAP & Retrieval Metric Engine (`compute_map.py`)
+* **Script**: `compute_map.py`
+* **Core Functions**:
+  * `parse_labels()`: Parses multi-label strings (e.g. `"['Pastures' 'Urban fabric']"`) safely without using `eval()`.
+  * `labels_overlap()`: Checks if query and retrieved patches share at least one land-cover class.
+  * `evaluate_retrieval_by_patch_id()`: Evaluates `mAP@10`, `Recall@1`, `Recall@5`, and `Recall@10` by string `patch_id` matching, preventing index misalignment issues across SAR and Multispectral sets.
