@@ -14,7 +14,7 @@ import pandas as pd
 from tqdm import tqdm
 
 DATASET_ROOT = Path(r"C:\Users\hp\out\micro project\final ye project\dataset\BigEarthNet-S2")
-VAL_CSV = Path("outputs/metadata/val_split.csv")
+VAL_CSV = Path("val_split.csv")
 OUTPUT_ZIP = Path("outputs/s2_val_subset_4500.zip")
 
 
