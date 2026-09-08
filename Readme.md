@@ -127,23 +127,81 @@ The 224 × 224 input size makes the processed images compatible with commonly us
 
 ## 3. Training-Set Channel Statistics
 
-Computed channel-wise mean and standard deviation using **only the 18,067 patches in the project's training split (`train_split.csv`)**.
+Computed channel-wise mean and standard deviation using **only the 18,067 patches in the project's training split (`train_split.
+PS C:\Users\hp\out\micro project\final ye project> # Count train samples                                                                                
+>> $trainCount = (Import-Csv "csvs\train_split.csv").Count                                        
+>> Write-Host "Train samples: $trainCount"
+>>                             
+>> # Count validation samples
+>> $valCount = (Import-Csv "csvs\val_split.csv").Count
+>> Write-Host "Validation samples: $valCount"
+>> 
+Train samples: 21000
+Validation samples: 4500
+(.venv) PS C:\Users\hp\out\micro project\final ye project> python .\compute_stats.py
+Loading metadata...
+Total training patches in our subset: 21000
 
-This was corrected from the initial calculation that used the full BigEarthNet training set. Using only the project's training data ensures that the normalization statistics correspond to the actual data used for model training.
+Processing 21000 images...
+1000/21000 images processed
+2000/21000 images processed
+3000/21000 images processed
+4000/21000 images processed
+5000/21000 images processed
+6000/21000 images processed
+7000/21000 images processed
+8000/21000 images processed
+9000/21000 images processed
+10000/21000 images processed
+11000/21000 images processed
+12000/21000 images processed
+13000/21000 images processed
+14000/21000 images processed
+15000/21000 images processed
+16000/21000 images processed
+17000/21000 images processed
+18000/21000 images processed
+19000/21000 images processed
+20000/21000 images processed
+21000/21000 images processed
 
-Final statistics:
+==============================
+PROCESSING COMPLETE
+==============================
+Images processed: 21000
+Images skipped: 0
 
-| Channel |     Mean | Standard Deviation |
-| ------- | -------: | -----------------: |
-| Red     | 635.3302 |           682.1374 |
-| Green   | 658.0161 |           598.0100 |
-| Blue    | 453.9845 |           604.7489 |
+Channel Mean:
+[587.03381196 613.27877453 438.18780225]
 
-The statistics were saved to:
+Channel Standard Deviation:
+[691.37116852 611.59253036 615.30702982]
 
-```text
-s2_stats.json
-```
+Saved statistics to s2_stats.json
+
+(.venv) PS C:\Users\hp\out\micro project\final ye project> ^C
+(.venv) PS C:\Users\hp\out\micro project\final ye project> python .\preprocessing\test_preprocessing.py
+Mean: [587.03381196 613.27877453 438.18780225]
+Std: [691.37116852 611.59253036 615.30702982]
+100 patch test passed!
+(.venv) PS C:\Users\hp\out\micro project\final ye project> python .\preprocessing\visualize_preprocessing.py
+Mean: [587.03381196 613.27877453 438.18780225]
+Std: [691.37116852 611.59253036 615.30702982]
+Visualizing 10 random training patches...
+
+Saved: visualization_results\comparison_1.png
+Saved: visualization_results\comparison_2.png
+Saved: visualization_results\comparison_3.png
+Saved: visualization_results\comparison_4.png
+Saved: visualization_results\comparison_5.png
+Saved: visualization_results\comparison_6.png
+Saved: visualization_results\comparison_7.png
+Saved: visualization_results\comparison_8.png
+Saved: visualization_results\comparison_9.png
+Saved: visualization_results\comparison_10.png
+
+Visualization completed successfully!
+(.venv) PS C:\Users\hp\out\micro project\final ye project> 
 
 These statistics are used for channel-wise normalization during preprocessing.
 
@@ -198,23 +256,6 @@ Final output shape:
 
 This processed representation can be passed to the feature-extraction backbone in the later retrieval pipeline.
 
----
-
-## 6. Efficient Statistics Computation
-
-The statistics computation was implemented using **running sums and squared sums** rather than storing every pixel from every training image in memory.
-
-This avoids loading the complete training dataset into RAM simultaneously.
-
-The final computation successfully processed:
-
-```text
-Training patches: 18,067
-Images processed: 18,067
-Images skipped: 0
-```
-
-This approach significantly reduces memory consumption while still producing the required channel-wise mean and standard deviation.
 
 ---
 
@@ -234,13 +275,10 @@ The tests verified:
 Final preprocessing verification:
 
 ```text
-Mean:
-[635.33024992 658.01613194 453.98453217]
+Mean: [587.03381196 613.27877453 438.18780225]
+Std: [691.37116852 611.59253036 615.30702982]
 
-Std:
-[682.1374482  598.00997309 604.74891859]
-
-Final shape:
+<!-- Final shape:
 (3, 224, 224)
 
 Minimum value:
@@ -250,7 +288,7 @@ Maximum value:
 5.106034
 
 Contains NaN:
-False
+False --> this is not sure because after changinf csvs to 21k , 4500,4500    need to check or its needed or not to check
 ```
 
 ---
@@ -331,9 +369,28 @@ To enable team members (Person 4 - Fateh & Person 1 - Jainam) to perform feature
   * `outputs/embeddings/baseline_val_patch_ids.txt` (Ordered list of 4,500 validation patch IDs)
 * **Purpose**: Uses pretrained **ResNet-50** (with FC layer replaced by `nn.Identity()`) combined with Person 2's standardized `preprocess_s2.py` pipeline to generate 2048-dimensional feature vectors for all 4,500 validation patches in ~1–2 minutes.
 
+Mean: [587.03381196 613.27877453 438.18780225]
+Std: [691.37116852 611.59253036 615.30702982]
+Loaded 4500 validation patches from csvs\val_split.csv
+Loaded pretrained ResNet-50 feature extractor on cpu
+Extracting embeddings: 100%|███████████████████████████████████████████████████████████████████████████████████████████████| 4500/4500 [11:45<00:00,  6.38it/s]
+
+==================================================
+EMBEDDING GENERATION COMPLETE
+==================================================
+Processed      : 4500 patches
+Skipped        : 0 patches
+Embedding shape: (4500, 2048)
+Saved array to : outputs\embeddings\baseline_val_ms_embeddings.npy
+Saved IDs to   : outputs\embeddings\baseline_val_patch_ids.txt
+Total time     : 705.20 seconds (156.71 ms/patch)
+==================================================
+
+
 ### 3. Multi-Label mAP & Retrieval Metric Engine (`compute_map.py`)
 * **Script**: `compute_map.py`
 * **Core Functions**:
   * `parse_labels()`: Parses multi-label strings (e.g. `"['Pastures' 'Urban fabric']"`) safely without using `eval()`.
   * `labels_overlap()`: Checks if query and retrieved patches share at least one land-cover class.
   * `evaluate_retrieval_by_patch_id()`: Evaluates `mAP@10`, `Recall@1`, `Recall@5`, and `Recall@10` by string `patch_id` matching, preventing index misalignment issues across SAR and Multispectral sets.
+

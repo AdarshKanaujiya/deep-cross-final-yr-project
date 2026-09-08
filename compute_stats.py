@@ -45,8 +45,8 @@ metadata = pd.read_parquet(METADATA_FILE)
 # Do NOT use the full BigEarthNet training set (237,871 patches) —
 # that would include patches outside our 30K subset and cause subtle leakage.
 #
-# Our train split has 18,067 patches (from train_split.csv).
-train_split_df = pd.read_csv("outputs/metadata/train_split.csv")
+# Our train split has 21000 patches (from train_split.csv).
+train_split_df = pd.read_csv("csvs/train_split.csv")
 train_patch_ids = set(train_split_df["patch_id"].tolist())
 
 train_metadata = metadata[

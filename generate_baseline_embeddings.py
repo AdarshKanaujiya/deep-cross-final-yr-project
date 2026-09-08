@@ -16,7 +16,7 @@ import torch.nn as nn
 import torchvision.models as models
 from tqdm import tqdm
 
-from preprocess_s2 import preprocess_patch, DATASET_ROOT
+from preprocessing.preprocess_s2 import preprocess_patch, DATASET_ROOT
 
 
 # ============================================================
@@ -113,6 +113,6 @@ def generate_validation_embeddings(val_csv_path, dataset_root, output_dir, devic
 
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    val_csv = "outputs/metadata/val_split.csv"
+    val_csv = "csvs/val_split.csv"
     output_dir = "outputs/embeddings"
     generate_validation_embeddings(val_csv, DATASET_ROOT, output_dir, device=device)
