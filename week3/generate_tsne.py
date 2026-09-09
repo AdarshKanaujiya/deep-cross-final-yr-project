@@ -85,6 +85,22 @@ s1_filtered_idx = [i for i, lbl in enumerate(s1_labels) if lbl in top_classes]
 ms_sample_idx = random.sample(ms_filtered_idx, min(SAMPLES_PER_MODALITY, len(ms_filtered_idx)))
 s1_sample_idx = random.sample(s1_filtered_idx, min(SAMPLES_PER_MODALITY, len(s1_filtered_idx)))
 
+# Save the exact patch IDs used for the baseline t-SNE
+TSNE_IDS_OUTPUT = "outputs/visualizations/baseline_tsne_patch_ids.txt"
+
+with open(TSNE_IDS_OUTPUT, "w", encoding="utf-8") as f:
+    f.write("MULTISPECTRAL\n")
+    for idx in ms_sample_idx:
+        f.write(f"{ms_ids[idx]}\n")
+
+    f.write("SAR\n")
+    for idx in s1_sample_idx:
+        f.write(f"{s1_ids[idx]}\n")
+
+print(f"Saved exact t-SNE patch IDs: {TSNE_IDS_OUTPUT}")
+print(f"MS t-SNE samples: {len(ms_sample_idx)}")
+print(f"SAR t-SNE samples: {len(s1_sample_idx)}")
+
 ms_sample_emb = ms_emb[ms_sample_idx]
 s1_sample_emb = s1_emb[s1_sample_idx]
 ms_sample_labels = [ms_labels[i] for i in ms_sample_idx]

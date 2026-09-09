@@ -508,6 +508,25 @@ Fix:
 | SAR → SAR (same-modal) | 0.8971 | 0.9922 | 0.9971 | 0.9078 |
 | Multispectral → Multispectral (same-modal) | 0.9440 | 0.9960 | 0.9978 | 0.9471 |
 
+
+MS embeddings: (4500, 2048), SAR embeddings: (4500, 2048)
+Loading metadata for labels...
+Top 5 classes selected: ['Arable land', 'Coniferous forest', 'Broad-leaved forest', 'Marine waters', 'Agro-forestry areas']
+Saved exact t-SNE patch IDs: outputs/visualizations/baseline_tsne_patch_ids.txt
+MS t-SNE samples: 1000
+SAR t-SNE samples: 1000
+Running t-SNE on 2000 embeddings (this takes 2-5 minutes)...
+[t-SNE] Computing 91 nearest neighbors...
+[t-SNE] Indexed 2000 samples in 0.005s...
+[t-SNE] Computed neighbors for 2000 samples in 0.718s...
+[t-SNE] Computed conditional probabilities for sample 1000 / 2000
+[t-SNE] Computed conditional probabilities for sample 2000 / 2000
+[t-SNE] Mean sigma: 2.508326
+[t-SNE] KL divergence after 250 iterations with early exaggeration: 67.057503
+[t-SNE] KL divergence after 1000 iterations: 1.254656
+Plotting...
+Saved: outputs/visualizations/baseline_tsne.png
+
 ### Baseline Outputs Generated
 
 * `outputs/reports/map_results.txt`
