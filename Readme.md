@@ -394,3 +394,134 @@ Total time     : 705.20 seconds (156.71 ms/patch)
   * `labels_overlap()`: Checks if query and retrieved patches share at least one land-cover class.
   * `evaluate_retrieval_by_patch_id()`: Evaluates `mAP@10`, `Recall@1`, `Recall@5`, and `Recall@10` by string `patch_id` matching, preventing index misalignment issues across SAR and Multispectral sets.
 
+---
+
+# Week 3 – Baseline Retrieval Evaluation and t-SNE Visualization
+
+### Objective
+
+Measure baseline retrieval quality, generate the baseline t-SNE plot, and build the results table for the before-training report.
+
+---
+
+## 1. Tasks Completed in Week 3
+
+### mAP Computation
+
+Implemented and validated the baseline retrieval evaluation in `week3/compute_map.py`.
+
+The script computes:
+
+* Cross-modal retrieval: SAR → MS and MS → SAR
+* Same-modal retrieval: SAR → SAR and MS → MS
+* Recall@1, Recall@5, Recall@10
+* mean Average Precision (mAP)
+
+### Baseline Results Table
+
+Built the baseline results table in `week3/build_results_table.py` and saved it to `outputs/reports/baseline_results_table.csv`.
+
+### Baseline t-SNE Visualization
+
+Generated the baseline t-SNE visualization in `week3/generate_tsne.py` and saved it to `outputs/visualizations/baseline_tsne.png`.
+
+### Label Distribution Check
+
+Ran `week3/label_distribution.py` to inspect the validation subset label distribution before sampling classes for visualization.
+
+---
+
+## 2. Files Used
+
+### Week 3 Scripts
+
+* `week3/label_distribution.py`
+* `week3/compute_map.py`
+* `week3/build_results_table.py`
+* `week3/generate_tsne.py`
+
+### Data Files
+
+* `metadata.parquet`
+* `csvs/val_split.csv`
+* `outputs/embeddings/baseline_val_ms_embeddings.npy`
+* `outputs/embeddings/baseline_val_s1_embeddings.npy`
+* `outputs/embeddings/baseline_val_ms_patch_ids.txt`
+* `outputs/embeddings/baseline_val_s1_patch_ids.txt`
+
+---
+
+## 3. Problems Faced and Fixes
+
+### Missing Python Packages
+
+Initial runs failed because `faiss` and `sklearn` were not installed in the active virtual environment.
+
+Fix:
+
+* Installed `faiss-cpu`
+* Installed `scikit-learn`
+
+### Wrong Patch-ID Lookup for SAR Labels
+
+SAR patch IDs could not be used directly as `patch_id` lookups in the metadata, which caused the SAR same-modal queries to drop to zero.
+
+Fix:
+
+* Used `csvs/val_split.csv` to map each `s1_name` to its matching `patch_id`
+* Resolved SAR IDs through this mapping before reading labels from metadata
+
+### Unicode Encoding Error on Windows
+
+Writing the results report failed with a `UnicodeEncodeError` because the output text contained arrow symbols and the default Windows encoding could not handle them.
+
+Fix:
+
+* Opened the report file with `encoding="utf-8"`
+
+### t-SNE API Mismatch
+
+`sklearn.manifold.TSNE` in the installed version did not accept the `n_iter` argument.
+
+Fix:
+
+* Removed `n_iter=1000` from the t-SNE call
+
+### Wrong Missing File Reference
+
+One run pointed to `baseline_val_patch_ids.txt`, which did not exist.
+
+Fix:
+
+* Corrected the script to use `baseline_val_ms_patch_ids.txt` and `baseline_val_s1_patch_ids.txt`
+
+---
+
+## 4. Final Output Results
+
+### Baseline Retrieval Results
+
+| Retrieval Mode | Recall@1 | Recall@5 | Recall@10 | mAP |
+| --- | ---: | ---: | ---: | ---: |
+| SAR → Multispectral (cross-modal) | 0.0018 | 0.0060 | 0.0113 | 0.0040 |
+| Multispectral → SAR (cross-modal) | 0.0060 | 0.0171 | 0.0267 | 0.0112 |
+| SAR → SAR (same-modal) | 0.8971 | 0.9922 | 0.9971 | 0.9078 |
+| Multispectral → Multispectral (same-modal) | 0.9440 | 0.9960 | 0.9978 | 0.9471 |
+
+### Baseline Outputs Generated
+
+* `outputs/reports/map_results.txt`
+* `outputs/reports/baseline_results_table.csv`
+* `outputs/visualizations/baseline_tsne.png`
+* `outputs/visualizations/label_distribution.png`
+
+---
+
+## 5. Week 3 Completion Status
+
+Week 3 is completed.
+
+The baseline evaluation, results table, and t-SNE visualization were all produced successfully after fixing the environment and data lookup issues.
+
+---
+

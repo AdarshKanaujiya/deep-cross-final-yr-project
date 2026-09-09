@@ -1,0 +1,7 @@
+BASELINE EVALUATION RESULTS
+No contrastive training — pretrained ResNet50 features only
+======================================================================
+SAR → Multispectral (cross-modal)             | R@1: 0.0018 | R@5: 0.0060 | R@10: 0.0113 | mAP: 0.0040 | Queries: 4500
+Multispectral → SAR (cross-modal)             | R@1: 0.0060 | R@5: 0.0171 | R@10: 0.0267 | mAP: 0.0112 | Queries: 4500
+SAR → SAR (same-modal)                        | R@1: 0.8971 | R@5: 0.9922 | R@10: 0.9971 | mAP: 0.9078 | Queries: 4500
+Multispectral → Multispectral (same-modal)    | R@1: 0.9440 | R@5: 0.9960 | R@10: 0.9978 | mAP: 0.9471 | Queries: 4500

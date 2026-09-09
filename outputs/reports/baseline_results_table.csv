@@ -1,0 +1,5 @@
+Retrieval Mode,Recall@1,Recall@5,Recall@10,mAP,Avg Query Time (ms),Notes
+SAR → Multispectral (cross-modal),0.0018,0.006,0.0113,0.004,2,Baseline — no contrastive training
+Multispectral → SAR (cross-modal),0.006,0.0171,0.0267,0.0112,2,Baseline — no contrastive training
+SAR → SAR (same-modal),0.8971,0.9922,0.9971,0.9078,4500,Baseline — no contrastive training
+Multispectral → Multispectral (same-modal),0.944,0.996,0.9978,0.9471,4500,Baseline — no contrastive training

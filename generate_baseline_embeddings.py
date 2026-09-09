@@ -91,7 +91,7 @@ def generate_validation_embeddings(val_csv_path, dataset_root, output_dir, devic
 
     # Save output files
     emb_save_path = output_dir / "baseline_val_ms_embeddings.npy"
-    ids_save_path = output_dir / "baseline_val_patch_ids.txt"
+    ids_save_path = output_dir / "baseline_val_ms_patch_ids.txt"
 
     np.save(emb_save_path, embeddings_matrix)
     with open(ids_save_path, "w") as f:
