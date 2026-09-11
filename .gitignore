@@ -38,3 +38,9 @@ Desktop.ini
 .DS_Store
 
 
+#cache files
+.s1_patch_cache.json
+
+models/best_model-v1.ckpt
+# Or ignore all checkpoint files:
+*.ckpt

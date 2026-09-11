@@ -544,3 +544,338 @@ The baseline evaluation, results table, and t-SNE visualization were all produce
 
 ---
 
+
+---
+
+# Week 4 – Training Monitoring and Trained Embedding Generation
+
+### Objective
+
+Monitor the training run, analyze overfitting, and generate trained validation embeddings from the best checkpoint for the next retrieval stage.
+
+---
+
+## 1. Tasks Completed in Week 4
+
+### Training Loss Plot
+
+Created the training-loss plotting script and generated a combined train/validation loss curve from the training CSV log.
+
+The plot was saved as:
+
+* `week4/training_loss_by_ad.png`
+
+### Overfitting Analysis
+
+Built the overfitting monitoring script and checked for the point where validation loss stopped improving while training loss kept dropping.
+
+The analysis found:
+
+* Best validation loss: `0.141299`
+* Best validation epoch: `19`
+* Overfitting detected at epoch: `17`
+
+The report was saved as:
+
+* `outputs/reports/overfitting_analysis.txt`
+
+### Trained Embedding Generation
+
+Implemented the trained embedding generation flow using the best two-tower checkpoint.
+
+The script processed all 4,500 validation samples and saved the trained embeddings for both towers.
+
+---
+
+## 2. Files Used
+
+### Week 4 Scripts
+
+* `week4/plot_training_loss.py`
+* `week4/monitor_overfitting.py`
+* `week4/generate_trained_embeddings.py`
+
+### Week 4 Support Files
+
+* `week4/dataloader.py`
+* `week4/dataset.py`
+* `week4/sar_preprocessing.py`
+* `preprocessing/preprocess_s2.py`
+* `config/settings.py`
+
+### Data / Model Files
+
+* `csvs/val_split.csv`
+* `models/best_model-v1.ckpt`
+* `s1_stats.json`
+* `s2_stats.json`
+* `dataset/BigEarthNet-S1-Required`
+* `dataset/BigEarthNet-S2`
+
+---
+
+## 3. Problems Faced and Fixes
+
+### Missing Python Packages
+
+Initial runs failed because the active interpreter did not have the required packages loaded.
+
+Fix:
+
+* Used the project virtual environment
+* Installed the missing runtime dependencies, including `numpy`, `faiss-cpu`, and `scikit-learn`
+
+### Wrong Import / Function Boundary for Sentinel-2 Preprocessing
+
+The week4 dataset expected the Sentinel-2 preprocessing path to be available through the existing preprocessing module.
+
+Fix:
+
+* Kept the preprocessing function aligned with the dataset import boundary
+
+### Sentinel-1 Statistics Path
+
+SAR preprocessing initially looked for `s1_stats.json` in the wrong folder.
+
+Fix:
+
+* Pointed the loader to the project-root `s1_stats.json`
+
+### NumPy vs Torch Tensor Mismatch
+
+The Sentinel-2 preprocessing output was a NumPy array, but the paired collate function expected Torch tensors.
+
+Fix:
+
+* Converted the Sentinel-2 output to a Torch tensor inside the dataset before batching
+
+### Dataset and Package Resolution
+
+Several import-path issues appeared while trying to run the script directly from the terminal.
+
+Fix:
+
+* Kept the final run inside the project environment so the week4 modules could resolve correctly
+
+---
+
+## 4. Notable Points
+
+* The checkpoint used for generation was `models/best_model-v1.ckpt`.
+* Validation was run on all 4,500 paired samples.
+* The trained embeddings are 512-dimensional, not 2048-dimensional, because they come from the trained projection-head towers.
+* The final run completed successfully after the dataset, preprocessing, and tensor types were aligned.
+
+---
+
+## 5. Final Outputs
+
+### Training and Analysis Outputs
+
+* `week4/training_loss_by_ad.png`
+* `outputs/reports/overfitting_analysis.txt`
+
+### Trained Embedding Outputs
+
+* `outputs/embeddings/trained_val_sar_embeddings.npy`
+* `outputs/embeddings/trained_val_ms_embeddings.npy`
+* `outputs/embeddings/trained_val_patch_ids.txt`
+
+### Final Trained Embedding Shapes
+
+* SAR: `(4500, 512)`
+* MS: `(4500, 512)`
+* IDs: `4500`
+
+---
+
+## 6. Week 4 Completion Status
+
+Yes, Week 4 is completed.
+
+The training plot, overfitting analysis, and trained embedding generation all ran successfully, and the trained validation embeddings were saved for the next retrieval stage.
+
+
+some snapshots from implementation:
+python week4/plot_training_loss.py
+[OK] Training plot saved:
+week4\training_loss_by_ad.png
+
+Training epochs:
+ epoch  train_loss
+     0    0.791149
+     1    0.328534
+     2    0.231112
+     3    0.171134
+     4    0.146115
+     5    0.123228
+     6    0.104864
+     7    0.096999
+     8    0.082918
+     9    0.071743
+    10    0.058400
+    11    0.052742
+    12    0.046903
+    13    0.041027
+    14    0.032551
+    15    0.026218
+    16    0.025290
+    17    0.020151
+    18    0.021698
+    19    0.021086
+
+Validation epochs:
+ epoch  val_loss
+     0  0.565804
+     1  0.408351
+     2  0.295164
+     3  0.281123
+     4  0.253096
+     5  0.330051
+     6  0.247094
+     7  0.270023
+     8  0.240193
+     9  0.172643
+    10  0.187142
+    11  0.172032
+    12  0.178261
+    13  0.167865
+    14  0.155063
+    15  0.148981
+    16  0.153984
+    17  0.170534
+    18  0.150742
+    19  0.141299
+
+============================================================
+>>>python week4/monitor_overfitting.py
+WEEK 4 — OVERFITTING ANALYSIS
+============================================================
+
+Epochs analyzed: 20
+Best validation loss: 0.141299
+Best validation epoch: 19
+
+OVERFITTING DETECTED
+Detected at epoch: 17
+Validation loss increased while training loss continued decreasing for at least 2 consecutive epochs.
+Best checkpoint epoch: 19
+
+EPOCH-BY-EPOCH RESULTS
+------------------------------------------------------------
+Epoch  0 | Train: 0.791149 | Val: 0.565804 | 
+Epoch  1 | Train: 0.328534 | Val: 0.408351 | 
+Epoch  2 | Train: 0.231112 | Val: 0.295164 | 
+Epoch  3 | Train: 0.171134 | Val: 0.281123 | 
+Epoch  4 | Train: 0.146115 | Val: 0.253096 | 
+Epoch  5 | Train: 0.123228 | Val: 0.330051 | 
+Epoch  6 | Train: 0.104864 | Val: 0.247094 | 
+Epoch  7 | Train: 0.096999 | Val: 0.270023 | 
+Epoch  8 | Train: 0.082918 | Val: 0.240193 | 
+Epoch  9 | Train: 0.071743 | Val: 0.172643 | 
+Epoch 10 | Train: 0.058400 | Val: 0.187142 | 
+Epoch 11 | Train: 0.052742 | Val: 0.172032 | 
+Epoch 12 | Train: 0.046903 | Val: 0.178261 | 
+Epoch 13 | Train: 0.041027 | Val: 0.167865 | 
+Epoch 14 | Train: 0.032551 | Val: 0.155063 | 
+Epoch 15 | Train: 0.026218 | Val: 0.148981 | 
+Epoch 16 | Train: 0.025290 | Val: 0.153984 | 
+Epoch 17 | Train: 0.020151 | Val: 0.170534 | 
+Epoch 18 | Train: 0.021698 | Val: 0.150742 | 
+Epoch 19 | Train: 0.021086 | Val: 0.141299 | BEST VAL
+
+[OK] Saved: outputs\reports\overfitting_analysis.txt
+
+============================================================
+
+>>>python week4/generate_trained_embeddings.py
+
+Mean: [587.03381196 613.27877453 438.18780225]
+Std: [691.37116852 611.59253036 615.30702982]
+
+
+============================================================
+WEEK 4 — TRAINED EMBEDDING GENERATION
+============================================================
+============================================================
+LOADING TRAINED MODEL
+============================================================
+Checkpoint: C:\Users\hp\out\micro project\final ye project\models\best_model-v1.ckpt
+Device:     cpu
+
+[OK] Trained TwoTowerNetwork loaded successfully.
+
+============================================================
+CREATING VALIDATION DATALOADER
+============================================================
+2026-09-12 00:57:30,774 - DataLoader - INFO - Initializing PairedBigEarthNetDataset instances for train and validation...
+2026-09-12 00:57:30,774 - Dataset - INFO - Loading paired split metadata from: C:\Users\hp\out\micro project\final ye project\csvs\val_split.csv
+2026-09-12 00:57:30,961 - Dataset - INFO - Initialized PairedBigEarthNetDataset with 4500 samples (S2 Available: True, Require S2: True).
+2026-09-12 00:57:30,962 - Dataset - INFO - Loading paired split metadata from: C:\Users\hp\out\micro project\final ye project\csvs\val_split.csv
+2026-09-12 00:57:31,066 - Dataset - INFO - Initialized PairedBigEarthNetDataset with 4500 samples (S2 Available: True, Require S2: True).
+2026-09-12 00:57:31,067 - DataLoader - INFO - Creating paired DataLoaders (batch_size=16, num_workers=0, require_s2=True)...
+[OK] Validation samples: 4500
+[OK] Validation batches:  282
+
+============================================================
+GENERATING TRAINED VALIDATION EMBEDDINGS
+============================================================
+Batch 1/282 | Samples processed: 16
+Batch 10/282 | Samples processed: 160
+Batch 20/282 | Samples processed: 320
+Batch 30/282 | Samples processed: 480
+Batch 40/282 | Samples processed: 640
+Batch 50/282 | Samples processed: 800
+Batch 60/282 | Samples processed: 960
+Batch 70/282 | Samples processed: 1120
+Batch 80/282 | Samples processed: 1280
+Batch 90/282 | Samples processed: 1440
+Batch 100/282 | Samples processed: 1600
+Batch 110/282 | Samples processed: 1760
+Batch 120/282 | Samples processed: 1920
+Batch 130/282 | Samples processed: 2080
+Batch 140/282 | Samples processed: 2240
+Batch 150/282 | Samples processed: 2400
+Batch 160/282 | Samples processed: 2560
+Batch 170/282 | Samples processed: 2720
+Batch 180/282 | Samples processed: 2880
+Batch 190/282 | Samples processed: 3040
+Batch 200/282 | Samples processed: 3200
+Batch 210/282 | Samples processed: 3360
+Batch 220/282 | Samples processed: 3520
+Batch 230/282 | Samples processed: 3680
+Batch 240/282 | Samples processed: 3840
+Batch 250/282 | Samples processed: 4000
+Batch 260/282 | Samples processed: 4160
+Batch 270/282 | Samples processed: 4320
+Batch 280/282 | Samples processed: 4480
+Batch 282/282 | Samples processed: 4500
+
+============================================================
+SAVING TRAINED EMBEDDINGS
+============================================================
+SAR embedding shape: (4500, 512)
+MS embedding shape:  (4500, 512)
+Patch ID count:      4500
+
+[OK] Files saved:
+  SAR embeddings:
+  C:\Users\hp\out\micro project\final ye project\outputs\embeddings\trained_val_sar_embeddings.npy
+
+  MS embeddings:
+  C:\Users\hp\out\micro project\final ye project\outputs\embeddings\trained_val_ms_embeddings.npy
+
+  Patch IDs:
+  C:\Users\hp\out\micro project\final ye project\outputs\embeddings\trained_val_patch_ids.txt
+
+============================================================
+TRAINED EMBEDDING GENERATION COMPLETE
+============================================================
+
+Final:
+SAR: (4500, 512)
+MS:  (4500, 512)
+IDs: 4500
+(.venv) PS C:\Users\hp\out\micro project\final ye project> 
+
+---
