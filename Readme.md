@@ -879,3 +879,174 @@ IDs: 4500
 (.venv) PS C:\Users\hp\out\micro project\final ye project> 
 
 ---
+
+# Week 5 – Retrieval Evaluation, Visual Comparison, and Result Analysis
+
+### Objective
+
+Evaluate the trained cross-modal retrieval model on the validation/test embedding set, generate qualitative visual evidence, and summarize the retrieval performance in a paper-style discussion.
+
+---
+
+## 1. Tasks Completed in Week 5
+
+### Retrieval Evaluation on the Trained Model
+
+Implemented the retrieval evaluation using the trained validation/test embeddings produced in Week 4.
+
+The script calculated cosine similarity between SAR and multispectral embeddings and reported:
+
+* Successes: `1745`
+* Failures: `2755`
+* Top-1 Recall: `38.78%`
+
+This result confirms that the trained model learns a shared representation space, but still has a large number of incorrect top-1 matches under exact paired-id evaluation.
+
+### Success / Failure Case Generation
+
+Created a case-generation script that identifies and saves:
+
+* 3 successful retrieval cases
+* 3 failure retrieval cases
+
+The script saved the corresponding output images into:
+
+* `week5/plot/success_case_01.png`
+* `week5/plot/success_case_02.png`
+* `week5/plot/success_case_03.png`
+* `week5/plot/failure_case_01.png`
+* `week5/plot/failure_case_02.png`
+* `week5/plot/failure_case_03.png`
+
+It also generated a report file:
+
+* `week5/plot/cases_report.csv`
+
+### Visual Retrieval Grid
+
+Built a 5 × 11 comparison grid showing:
+
+* 5 query SAR patches
+* 5 baseline MS retrievals per query
+* 5 trained MS retrievals per query
+
+Final image saved as:
+
+* `week5/plot/visual_retrieval_comparison.png`
+
+---
+
+## 2. Week 5 Scripts
+
+* `week5/success_failure_cases.py`
+* `week5/visual_retrieval_grid.py`
+* `week5/results_analysis.md`
+
+---
+
+## 3. Data and Output Files Used
+
+### Embedding Files
+
+* `outputs/embeddings/trained_val_sar_embeddings.npy`
+* `outputs/embeddings/trained_val_ms_embeddings.npy`
+* `outputs/embeddings/trained_val_patch_ids.txt`
+
+### Baseline Files
+
+* `outputs/embeddings/baseline_val_s1_embeddings.npy`
+* `outputs/embeddings/baseline_val_ms_embeddings.npy`
+* `outputs/embeddings/baseline_val_s1_patch_ids.txt`
+* `outputs/embeddings/baseline_val_ms_patch_ids.txt`
+
+### Mapping Used for Correct Alignment
+
+The SAR-side identifiers were mapped using:
+
+* `csvs/val_split.csv`
+
+This was required because SAR file IDs and canonical BigEarthNet `patch_id` values are not always directly interchangeable. The script resolved the correct pairings before performing retrieval visualization.
+
+---
+
+## 4. Problems Faced and Fixes
+
+### Wrong ID Matching Across Modalities
+
+The earlier visual script failed because the baseline SAR ID list and the trained patch-ID list were compared as raw strings without resolving the correct `s1_name → patch_id` mapping.
+
+Fix:
+
+* Used the validation CSV to map SAR IDs back to the canonical `patch_id` used in the retrieval evaluation.
+
+### Repeated Full-Dataset Scanning
+
+The first runs were extremely slow because the script scanned the entire BigEarthNet-S2 tree repeatedly during image loading.
+
+Fix:
+
+* Built a single file index once, then looked up patch files from the index instead of calling `rglob` repeatedly.
+
+### Image Lookup for Large Dataset
+
+The image-loading step initially caused long delays or interrupts when the script attempted to scan the entire large Sentinel-2 directory thousands of times.
+
+Fix:
+
+* Used the precomputed file index and direct root/stem lookup to reduce memory and runtime stress.
+
+---
+
+## 5. Verified Run Results
+
+The following command was run successfully:
+
+```powershell
+python week5/visual_retrieval_grid.py
+```
+
+Output summary:
+
+* Baseline SAR: `(4500, 2048)`
+* Baseline MS: `(4500, 2048)`
+* Trained SAR: `(4500, 512)`
+* Trained MS: `(4500, 512)`
+* Common SAR patches: `4500`
+* Selected queries: `5`
+* Saved output: `week5/plot/visual_retrieval_comparison.png`
+
+The following command was also validated successfully:
+
+```powershell
+python week5/success_failure_cases.py
+```
+
+Output summary:
+
+* Successes: `1745`
+* Failures: `2755`
+* Top-1 Recall: `38.78%`
+* Saved images in: `week5/plot`
+* Saved report: `week5/plot/cases_report.csv`
+
+---
+
+## 6. Week 5 Completion Status
+
+Yes, Week 5 is completed.
+
+The trained retrieval evaluation, success/failure case generation, and visual comparison grid were all produced successfully. The project now contains the retrieval performance evidence and visualization outputs needed for the final report and IEEE-style result discussion.
+
+### Black-image note (important)
+
+The black SAR panels seen in some success/failure examples are not an error in the retrieval model itself. They appear because the script loads a selected SAR patch image from the local dataset, and some of the patches chosen by the validation set are not present in the local `BigEarthNet-S1-Required` subset on this machine. In such cases, the image loader falls back to a dark/black panel instead of raising a retrieval failure. This means the black image is a data-availability rendering issue, not a model or evaluation bug.
+
+### Why these specific images were selected
+
+The example images are selected from the validation/query set using the actual retrieval results. The visualization and case-generation scripts identify candidate queries from the paired validation data, then rank the retrieved multispectral patches by similarity. Only the relevant matching and non-matching examples are displayed to illustrate model behavior. This makes the visual outputs evidence of retrieval quality, not random screenshots.
+
+### If cleaner images are required
+
+If we want all visual examples to be visually clear without black regions, the only change needed is to filter out query/sample IDs that do not have a valid local SAR image file before plotting. This is a presentation/data-selection issue, not a performance issue. In other words, we do not need to change the model or retrieval logic; we only need to ensure that the selected examples are restricted to locally available patches. This can be done in the plotting step or by excluding missing-file cases from the comparison set.
+
+---
