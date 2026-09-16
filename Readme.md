@@ -1049,4 +1049,182 @@ The example images are selected from the validation/query set using the actual r
 
 If we want all visual examples to be visually clear without black regions, the only change needed is to filter out query/sample IDs that do not have a valid local SAR image file before plotting. This is a presentation/data-selection issue, not a performance issue. In other words, we do not need to change the model or retrieval logic; we only need to ensure that the selected examples are restricted to locally available patches. This can be done in the plotting step or by excluding missing-file cases from the comparison set.
 
+### terminal output
+### python week5/success_failure_cases.py
+
+Loading test embeddings...
+SAR shape: (4500, 512)
+MS shape:  (4500, 512)
+
+Calculating SAR → MS similarity...
+Similarity calculation finished.
+
+Successes: 1745
+Failures:  2755
+Top-1 Recall: 38.78%
+
+Building SAR file index...
+Indexing files in: C:\Users\hp\out\micro project\final ye project\dataset\BigEarthNet-S1-Required
+This is done only once...
+Indexed 60000 file stems from C:\Users\hp\out\micro project\final ye project\dataset\BigEarthNet-S1-Required
+
+Building MS file index...
+Indexing files in: C:\Users\hp\out\micro project\final ye project\dataset\BigEarthNet-S2
+This is done only once...
+Indexed 6593856 file stems from C:\Users\hp\out\micro project\final ye project\dataset\BigEarthNet-S2
+
+Generating success cases...
+Success case 1/3: S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_53_44
+Saved: C:\Users\hp\out\micro project\final ye project\week5\plot\success_case_01.png
+Success case 2/3: S2A_MSIL2A_20170905T095031_N9999_R079_T35VNL_31_58
+Saved: C:\Users\hp\out\micro project\final ye project\week5\plot\success_case_02.png
+Success case 3/3: S2B_MSIL2A_20180515T094029_N9999_R036_T35VNJ_55_65
+Saved: C:\Users\hp\out\micro project\final ye project\week5\plot\success_case_03.png
+
+Generating failure cases...
+Failure case 1/3: S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_39_66
+Saved: C:\Users\hp\out\micro project\final ye project\week5\plot\failure_case_01.png
+Failure case 2/3: S2A_MSIL2A_20171002T094031_N9999_R036_T34TCR_59_41
+Saved: C:\Users\hp\out\micro project\final ye project\week5\plot\failure_case_02.png
+Failure case 3/3: S2B_MSIL2A_20180220T114339_N9999_R123_T29UPV_24_45
+Saved: C:\Users\hp\out\micro project\final ye project\week5\plot\failure_case_03.png
+
+========================================
+DONE
+========================================
+Top-1 Recall: 38.78%
+Successes:    1745
+Failures:     2755
+Report:       C:\Users\hp\out\micro project\final ye project\week5\plot\cases_report.csv
+Images:       C:\Users\hp\out\micro project\final ye project\week5\plot
+
+
+###  python week5/visual_retrieval_grid.py
+
+========================================
+Loading embeddings...
+========================================
+Baseline SAR: (4500, 2048)
+Baseline MS:  (4500, 2048)
+Trained SAR:  (4500, 512)
+Trained MS:   (4500, 512)
+
+Running safety checks...
+
+Building embedding ID maps...
+Baseline SAR patches: 4500
+Trained SAR patches:  4500
+Common SAR patches:   4500
+
+Selected queries:
+  0: S2A_MSIL2A_20170905T095031_N9999_R079_T35VNL_14_77
+  900: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_70_62
+  1800: S2B_MSIL2A_20180422T093029_N9999_R136_T34TEQ_74_67
+  2700: S2B_MSIL2A_20180220T114339_N9999_R123_T29UPV_51_19
+  3600: S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_21_22
+
+========================================
+Preparing image file indexes
+========================================
+
+Building file index...
+Indexing files in: C:\Users\hp\out\micro project\final ye project\dataset\BigEarthNet-S1-Required
+This is done only once...
+Indexed 60000 files
+Unique file stems: 60000
+
+Building file index...
+Indexing files in: C:\Users\hp\out\micro project\final ye project\dataset\BigEarthNet-S2
+This is done only once...
+Indexed 6593856 files
+Unique file stems: 6593856
+
+Normalizing gallery embeddings...
+
+========================================
+Generating visual comparison
+========================================
+
+Query 1/5
+SAR patch: S2A_MSIL2A_20170905T095031_N9999_R079_T35VNL_14_77
+  Loading SAR image...
+  Baseline #1: S2A_MSIL2A_20180526T100031_N9999_R122_T34WFU_73_75
+  Baseline #2: S2A_MSIL2A_20180526T100031_N9999_R122_T34WFU_75_76
+  Baseline #3: S2A_MSIL2A_20170905T095031_N9999_R079_T35VNL_14_77
+  Baseline #4: S2B_MSIL2A_20180525T094029_N9999_R036_T35VNL_37_13
+  Baseline #5: S2A_MSIL2A_20170701T093031_N9999_R136_T35VPK_13_66
+  Trained #1: S2A_MSIL2A_20170905T095031_N9999_R079_T35VNL_14_77
+  Trained #2: S2B_MSIL2A_20180220T114339_N9999_R123_T29UPV_20_28
+  Trained #3: S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_29_16
+  Trained #4: S2B_MSIL2A_20180525T094029_N9999_R036_T35VNK_70_76
+  Trained #5: S2B_MSIL2A_20170924T093019_N9999_R136_T35VPK_24_73
+
+Query 2/5
+SAR patch: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_70_62
+  Loading SAR image...
+  Baseline #1: S2A_MSIL2A_20180506T100031_N9999_R122_T33UWP_74_57
+  Baseline #2: S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_16_56
+  Baseline #3: S2B_MSIL2A_20180502T093039_N9999_R136_T34TEP_22_73
+  Baseline #4: S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_15_53
+  Baseline #5: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_13_71
+  Trained #1: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_70_62
+  Trained #2: S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_49_70
+  Trained #3: S2B_MSIL2A_20180515T112109_N9999_R037_T29SND_20_69
+  Trained #4: S2A_MSIL2A_20170818T103021_N9999_R108_T32TMT_59_72
+  Trained #5: S2B_MSIL2A_20180515T112109_N9999_R037_T29SND_37_17
+
+Query 3/5
+SAR patch: S2B_MSIL2A_20180422T093029_N9999_R136_T34TEQ_74_67
+  Loading SAR image...
+  Baseline #1: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_28_74
+  Baseline #2: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_22_67
+  Baseline #3: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_13_71
+  Baseline #4: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_19_67
+  Baseline #5: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_17_66
+  Trained #1: S2B_MSIL2A_20180422T093029_N9999_R136_T34TEQ_74_67
+  Trained #2: S2B_MSIL2A_20180422T093029_N9999_R136_T34TEQ_77_77
+  Trained #3: S2B_MSIL2A_20180422T093029_N9999_R136_T34TEQ_73_72
+  Trained #4: S2B_MSIL2A_20180509T092029_N9999_R093_T34TFN_15_57
+  Trained #5: S2B_MSIL2A_20170825T093029_N9999_R136_T34TEQ_45_76
+
+Query 4/5
+SAR patch: S2B_MSIL2A_20180220T114339_N9999_R123_T29UPV_51_19
+  Loading SAR image...
+  Baseline #1: S2A_MSIL2A_20170720T100031_N9999_R122_T34UDG_71_20
+  Baseline #2: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_13_71
+  Baseline #3: S2B_MSIL2A_20180502T093039_N9999_R136_T34TEP_76_48
+  Baseline #4: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_22_67
+  Baseline #5: S2A_MSIL2A_20180526T100031_N9999_R122_T34WFU_57_18
+  Trained #1: S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_40_13
+  Trained #2: S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_25_19
+  Trained #3: S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_19_18
+  Trained #4: S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_26_15
+  Trained #5: S2B_MSIL2A_20171112T114339_N9999_R123_T29UPU_39_15
+
+Query 5/5
+SAR patch: S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_21_22
+  Loading SAR image...
+  Baseline #1: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_13_71
+  Baseline #2: S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_22_67
+  Baseline #3: S2A_MSIL2A_20170701T093031_N9999_R136_T35VPK_13_66
+  Baseline #4: S2A_MSIL2A_20170701T093031_N9999_R136_T35VPK_21_57
+  Baseline #5: S2B_MSIL2A_20170924T093019_N9999_R136_T35VNH_15_30
+  Trained #1: S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_21_22
+  Trained #2: S2A_MSIL2A_20180413T095031_N9999_R079_T35VLG_41_19
+  Trained #3: S2A_MSIL2A_20180413T095031_N9999_R079_T35VLG_14_31
+  Trained #4: S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_39_13
+  Trained #5: S2A_MSIL2A_20170905T095031_N9999_R079_T35VNL_16_14
+
+========================================
+DONE
+========================================
+Saved: C:\Users\hp\out\micro project\final ye project\week5\plot\visual_retrieval_comparison.png
+
+Comparison:
+  5 identical SAR query patches
+  Baseline model → top-5 MS
+  Trained model  → top-5 MS
+
+Output directory: C:\Users\hp\out\micro project\final ye project\week5\plot
+
 ---
